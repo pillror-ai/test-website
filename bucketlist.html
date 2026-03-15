@@ -1,0 +1,592 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Us, Soon ✦ For Srinita</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* ── LAYOUT ── */
+      .bucketlist-layout {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 2.5rem;
+        align-items: start;
+      }
+
+      @media (max-width: 860px) {
+        .bucketlist-layout {
+          grid-template-columns: 1fr;
+        }
+        .add-panel {
+          order: -1;
+        }
+      }
+
+      /* ── ITEMS LIST ── */
+      .items-section {
+      }
+
+      .items-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.9rem;
+      }
+
+      .bucket-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        background: linear-gradient(
+          135deg,
+          rgba(107, 63, 160, 0.09),
+          rgba(17, 13, 46, 0.45)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.15);
+        border-radius: 14px;
+        padding: 1.3rem 1.5rem;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .bucket-item::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+          135deg,
+          rgba(212, 120, 154, 0.07),
+          transparent
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .bucket-item:hover {
+        border-color: rgba(196, 168, 232, 0.3);
+      }
+      .bucket-item:hover::before {
+        opacity: 1;
+      }
+
+      .bucket-item.done {
+        border-color: rgba(212, 120, 154, 0.25);
+        background: linear-gradient(
+          135deg,
+          rgba(212, 120, 154, 0.09),
+          rgba(107, 63, 160, 0.06)
+        );
+      }
+
+      .bucket-item.done .item-text {
+        text-decoration: line-through;
+        opacity: 0.5;
+      }
+
+      .item-check {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        border: 1.5px solid rgba(196, 168, 232, 0.35);
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.7rem;
+        color: transparent;
+        transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        margin-top: 2px;
+      }
+
+      .bucket-item.done .item-check {
+        background: linear-gradient(135deg, var(--rose), var(--purple));
+        border-color: transparent;
+        color: white;
+        transform: scale(1.1);
+      }
+
+      .item-content {
+        flex: 1;
+      }
+
+      .item-emoji {
+        font-size: 1.2rem;
+        margin-right: 0.5rem;
+      }
+
+      .item-text {
+        font-family: "Crimson Pro", serif;
+        font-size: 1.1rem;
+        color: #ddd4f0;
+        line-height: 1.4;
+        transition:
+          opacity 0.3s,
+          text-decoration 0.3s;
+      }
+
+      .item-who {
+        display: inline-block;
+        margin-top: 0.3rem;
+        font-family: "Crimson Pro", serif;
+        font-size: 0.78rem;
+        letter-spacing: 0.08em;
+        color: var(--rose);
+        opacity: 0.65;
+      }
+
+      .item-delete {
+        background: none;
+        border: none;
+        color: rgba(196, 168, 232, 0.25);
+        cursor: pointer;
+        font-size: 1rem;
+        padding: 0.2rem 0.4rem;
+        border-radius: 6px;
+        transition: color 0.2s;
+        flex-shrink: 0;
+        opacity: 0;
+        transition:
+          opacity 0.2s,
+          color 0.2s;
+      }
+
+      .bucket-item:hover .item-delete {
+        opacity: 1;
+      }
+      .item-delete:hover {
+        color: var(--rose);
+      }
+
+      /* ── PROGRESS ── */
+      .progress-bar-wrap {
+        margin-bottom: 2.5rem;
+      }
+
+      .progress-info {
+        display: flex;
+        justify-content: space-between;
+        font-family: "Crimson Pro", serif;
+        font-size: 0.88rem;
+        color: var(--lavender);
+        opacity: 0.7;
+        margin-bottom: 0.6rem;
+      }
+
+      .progress-bar {
+        height: 6px;
+        background: rgba(196, 168, 232, 0.12);
+        border-radius: 3px;
+        overflow: hidden;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(to right, var(--purple), var(--rose));
+        border-radius: 3px;
+        transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
+
+      /* ── ADD PANEL ── */
+      .add-panel {
+        background: linear-gradient(
+          145deg,
+          rgba(26, 16, 64, 0.7),
+          rgba(17, 13, 46, 0.8)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.18);
+        border-radius: 20px;
+        padding: 2rem;
+        position: sticky;
+        top: 100px;
+      }
+
+      .add-panel-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.3rem;
+        font-weight: 300;
+        color: var(--lavender);
+        margin-bottom: 1.5rem;
+      }
+
+      .add-input {
+        width: 100%;
+        background: rgba(10, 8, 24, 0.5);
+        border: 1px solid rgba(196, 168, 232, 0.15);
+        border-radius: 10px;
+        padding: 1rem 1.2rem;
+        font-family: "Crimson Pro", serif;
+        font-size: 1rem;
+        color: #e0d8f5;
+        outline: none;
+        margin-bottom: 0.8rem;
+        transition: border-color 0.3s;
+      }
+
+      .add-input::placeholder {
+        color: rgba(196, 168, 232, 0.3);
+        font-style: italic;
+      }
+      .add-input:focus {
+        border-color: rgba(196, 168, 232, 0.4);
+      }
+
+      .emoji-picker {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        margin-bottom: 1.2rem;
+      }
+
+      .emoji-opt {
+        background: rgba(107, 63, 160, 0.12);
+        border: 1px solid rgba(196, 168, 232, 0.15);
+        border-radius: 8px;
+        padding: 0.3rem 0.5rem;
+        cursor: pointer;
+        font-size: 1.1rem;
+        transition: all 0.2s;
+      }
+
+      .emoji-opt:hover,
+      .emoji-opt.sel {
+        background: rgba(212, 120, 154, 0.15);
+        border-color: rgba(212, 120, 154, 0.4);
+        transform: scale(1.15);
+      }
+
+      .add-btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* stats */
+      .stats-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.8rem;
+        margin-top: 2rem;
+      }
+
+      .stat-box {
+        text-align: center;
+        background: rgba(107, 63, 160, 0.08);
+        border: 1px solid rgba(196, 168, 232, 0.12);
+        border-radius: 12px;
+        padding: 1rem;
+      }
+
+      .stat-num {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2rem;
+        font-weight: 300;
+        color: var(--blush);
+        line-height: 1;
+      }
+
+      .stat-label {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.78rem;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: var(--lavender);
+        opacity: 0.6;
+        margin-top: 0.3rem;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 3rem 1rem;
+        color: var(--lavender);
+        opacity: 0.4;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.1rem;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="starfield"></canvas>
+    <div class="floating-hearts"></div>
+
+    <nav>
+      <a href="index.html" class="nav-brand">✦ For Srinita</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="letters.html">Letters</a></li>
+        <li><a href="feelings.html">Feelings</a></li>
+        <li><a href="journal.html">Journal</a></li>
+        <li><a href="memories.html">Memories</a></li>
+        <li><a href="bucketlist.html">Us, Soon</a></li>
+      </ul>
+    </nav>
+
+    <div class="page-wrapper">
+      <header class="page-hero">
+        <p class="eyebrow">Everything ahead of us</p>
+        <h1><em>Us,</em> Soon</h1>
+        <p class="subtitle">
+          All the things we're going to do the moment we're back together. Add
+          your ideas too!
+        </p>
+      </header>
+
+      <div class="section">
+        <div class="bucketlist-layout">
+          <!-- List -->
+          <div class="items-section">
+            <div class="progress-bar-wrap">
+              <div class="progress-info">
+                <span id="progress-label">Loading...</span>
+                <span id="progress-pct">0%</span>
+              </div>
+              <div class="progress-bar">
+                <div
+                  class="progress-fill"
+                  id="progress-fill"
+                  style="width: 0%"
+                ></div>
+              </div>
+            </div>
+
+            <h2 class="section-title">Our List</h2>
+            <div class="items-list" id="items-list">
+              <div class="empty-state">Loading our adventures...</div>
+            </div>
+          </div>
+
+          <!-- Add -->
+          <div class="add-panel">
+            <div class="add-panel-title">Add something new ✦</div>
+
+            <input
+              class="add-input"
+              id="new-item-text"
+              type="text"
+              placeholder="Something we should do together..."
+              onkeydown="if (event.key === 'Enter') addItem();"
+            />
+
+            <div class="emoji-picker" id="emoji-picker">
+              <span class="emoji-opt sel" onclick="selectEmoji(this)">🌟</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">🍜</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">🎬</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">🏔️</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">🌊</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">☕</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">🎵</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">🛫</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">🌸</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">🎉</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">💌</span>
+              <span class="emoji-opt" onclick="selectEmoji(this)">🌙</span>
+            </div>
+
+            <button class="btn btn-primary add-btn" onclick="addItem()">
+              Add to our list ✦
+            </button>
+
+            <div class="stats-row">
+              <div class="stat-box">
+                <div class="stat-num" id="stat-total">—</div>
+                <div class="stat-label">Total</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-num" id="stat-done">—</div>
+                <div class="stat-label">Done</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="shared.js"></script>
+    <script>
+      // Pre-populated items from Saaketh
+      const SEED_ITEMS = [
+        {
+          emoji: "🎬",
+          text: "Have a proper movie marathon — full blanket fort, snacks, the works",
+          addedBy: "Saaketh",
+          done: false,
+        },
+        {
+          emoji: "🚗",
+          text: "Take a spontaneous road trip with no itinerary",
+          addedBy: "Saaketh",
+          done: false,
+        },
+        {
+          emoji: "🍳",
+          text: "Cook a proper meal together from scratch — something ambitious",
+          addedBy: "Saaketh",
+          done: false,
+        },
+        {
+          emoji: "📚",
+          text: "Spend a whole day at a library and leave with too many books",
+          addedBy: "Saaketh",
+          done: false,
+        },
+        {
+          emoji: "🌊",
+          text: "Go to the ocean and paint! I really hope this'll be better than the flowers",
+          addedBy: "Saaketh",
+          done: false,
+        },
+        {
+          emoji: "🎵",
+          text: "Find a live music show to go to — maybe jazz? :eyes:",
+          addedBy: "Saaketh",
+          done: false,
+        },
+      ];
+
+      let db;
+      let items = [];
+      let selectedEmoji = "🌟";
+
+      document.addEventListener("DOMContentLoaded", async () => {
+        db = initFirebase();
+        await seedIfEmpty();
+        loadItems();
+      });
+
+      async function seedIfEmpty() {
+        try {
+          const snap = await db.collection("bucketlist").limit(1).get();
+          if (snap.empty) {
+            const batch = db.batch();
+            SEED_ITEMS.forEach((item) => {
+              const ref = db.collection("bucketlist").doc();
+              batch.set(ref, {
+                ...item,
+                createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+              });
+            });
+            await batch.commit();
+          }
+        } catch (e) {
+          console.error("Seed error:", e);
+        }
+      }
+
+      async function loadItems() {
+        try {
+          const snap = await db
+            .collection("bucketlist")
+            .orderBy("createdAt", "asc")
+            .get();
+          items = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          renderItems();
+        } catch (e) {
+          console.error("Load error:", e);
+          document.getElementById("items-list").innerHTML =
+            '<div class="empty-state">Couldn\'t load — check Firebase config</div>';
+        }
+      }
+
+      function renderItems() {
+        const list = document.getElementById("items-list");
+        const total = items.length;
+        const done = items.filter((i) => i.done).length;
+
+        // Progress
+        const pct = total ? Math.round((done / total) * 100) : 0;
+        document.getElementById("progress-fill").style.width = pct + "%";
+        document.getElementById("progress-pct").textContent = pct + "%";
+        document.getElementById("progress-label").textContent =
+          `${done} of ${total} adventures ticked off`;
+        document.getElementById("stat-total").textContent = total;
+        document.getElementById("stat-done").textContent = done;
+
+        if (!items.length) {
+          list.innerHTML =
+            '<div class="empty-state">Add your first adventure ✦</div>';
+          return;
+        }
+
+        list.innerHTML = items
+          .map(
+            (item) => `
+        <div class="bucket-item ${item.done ? "done" : ""}" onclick="toggleItem('${item.id}')">
+          <div class="item-check">${item.done ? "✓" : ""}</div>
+          <div class="item-content">
+            <div class="item-text"><span class="item-emoji">${item.emoji || "🌟"}</span>${item.text}</div>
+            ${item.addedBy ? `<span class="item-who">added by ${item.addedBy}</span>` : ""}
+          </div>
+          <button class="item-delete" onclick="deleteItem(event, '${item.id}')">✕</button>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      async function toggleItem(id) {
+        const item = items.find((i) => i.id === id);
+        if (!item) return;
+        try {
+          await db
+            .collection("bucketlist")
+            .doc(id)
+            .update({ done: !item.done });
+          item.done = !item.done;
+          renderItems();
+          if (item.done) showToast("One step closer ✦");
+        } catch (e) {
+          showToast("Couldn't update — check Firebase");
+        }
+      }
+
+      async function addItem() {
+        const input = document.getElementById("new-item-text");
+        const text = input.value.trim();
+        if (!text) {
+          showToast("Write something first 💌");
+          return;
+        }
+
+        const newItem = {
+          emoji: selectedEmoji,
+          text,
+          addedBy: "Srinita",
+          done: false,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        };
+
+        try {
+          await db.collection("bucketlist").add(newItem);
+          input.value = "";
+          showToast("Added! ✦");
+          loadItems();
+        } catch (e) {
+          showToast("Couldn't save — check Firebase");
+        }
+      }
+
+      async function deleteItem(event, id) {
+        event.stopPropagation();
+        try {
+          await db.collection("bucketlist").doc(id).delete();
+          showToast("Removed");
+          loadItems();
+        } catch (e) {
+          showToast("Couldn't delete");
+        }
+      }
+
+      function selectEmoji(el) {
+        document
+          .querySelectorAll(".emoji-opt")
+          .forEach((e) => e.classList.remove("sel"));
+        el.classList.add("sel");
+        selectedEmoji = el.textContent;
+      }
+    </script>
+  </body>
+</html>

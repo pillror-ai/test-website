@@ -1,0 +1,504 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How Are You Feeling? ✦ For Srinita</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* ── MOOD SELECTOR ── */
+      .moods-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.2rem;
+        margin-bottom: 4rem;
+      }
+
+      .mood-btn {
+        background: linear-gradient(
+          145deg,
+          rgba(107, 63, 160, 0.1),
+          rgba(17, 13, 46, 0.5)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.2);
+        border-radius: 16px;
+        padding: 2rem 1.5rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        color: var(--white);
+        font-family: "Crimson Pro", serif;
+      }
+
+      .mood-btn:hover {
+        transform: translateY(-5px) scale(1.03);
+        border-color: rgba(196, 168, 232, 0.5);
+        box-shadow: 0 12px 45px rgba(107, 63, 160, 0.25);
+      }
+
+      .mood-btn.active {
+        border-color: var(--blush);
+        background: linear-gradient(
+          145deg,
+          rgba(212, 120, 154, 0.2),
+          rgba(107, 63, 160, 0.18)
+        );
+        box-shadow:
+          0 8px 40px rgba(212, 120, 154, 0.2),
+          0 0 0 1px rgba(232, 180, 200, 0.15);
+      }
+
+      .mood-emoji {
+        font-size: 2.8rem;
+        display: block;
+        margin-bottom: 0.8rem;
+        transition: transform 0.3s;
+      }
+
+      .mood-btn:hover .mood-emoji {
+        transform: scale(1.2) rotate(-5deg);
+      }
+      .mood-btn.active .mood-emoji {
+        transform: scale(1.25);
+      }
+
+      .mood-name {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.2rem;
+        font-weight: 300;
+        color: var(--blush);
+        margin-bottom: 0.3rem;
+      }
+
+      .mood-hint {
+        font-size: 0.85rem;
+        color: var(--lavender);
+        opacity: 0.7;
+      }
+
+      /* ── MESSAGE PANEL ── */
+      .message-panel {
+        display: none;
+        animation: fadeSlideUp 0.6s ease forwards;
+      }
+
+      .message-panel.visible {
+        display: block;
+      }
+
+      @keyframes fadeSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .message-card {
+        background: linear-gradient(
+          145deg,
+          rgba(26, 16, 64, 0.75),
+          rgba(17, 13, 46, 0.85)
+        );
+        border: 1px solid rgba(212, 120, 154, 0.25);
+        border-radius: 20px;
+        padding: 3rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .message-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          to right,
+          var(--purple),
+          var(--rose),
+          var(--blush)
+        );
+      }
+
+      .message-card::after {
+        content: "";
+        position: absolute;
+        bottom: -60px;
+        right: -60px;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 120, 154, 0.08),
+          transparent 65%
+        );
+        pointer-events: none;
+      }
+
+      .message-mood-header {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+
+      .message-mood-emoji {
+        font-size: 2.5rem;
+      }
+
+      .message-mood-label {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.8rem;
+        font-weight: 300;
+        color: var(--blush);
+      }
+
+      .message-body {
+        font-family: "Crimson Pro", serif;
+        font-size: 1.18rem;
+        line-height: 1.9;
+        color: #e0d8f5;
+        white-space: pre-line;
+        margin-bottom: 2rem;
+      }
+
+      .message-sign {
+        font-family: "Dancing Script", cursive;
+        font-size: 1.4rem;
+        color: var(--blush);
+        text-align: right;
+      }
+
+      .extra-messages {
+        margin-top: 2.5rem;
+        display: grid;
+        gap: 1.2rem;
+      }
+
+      .extra-msg {
+        background: rgba(107, 63, 160, 0.08);
+        border-left: 2px solid rgba(196, 168, 232, 0.3);
+        border-radius: 0 10px 10px 0;
+        padding: 1.2rem 1.5rem;
+        font-family: "Crimson Pro", serif;
+        font-size: 1.05rem;
+        color: var(--lavender);
+        font-style: italic;
+        line-height: 1.65;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="starfield"></canvas>
+    <div class="floating-hearts"></div>
+
+    <nav>
+      <a href="index.html" class="nav-brand">✦ For Srinita</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="letters.html">Letters</a></li>
+        <li><a href="feelings.html">Feelings</a></li>
+        <li><a href="journal.html">Journal</a></li>
+        <li><a href="memories.html">Memories</a></li>
+        <li><a href="bucketlist.html">Us, Soon</a></li>
+      </ul>
+    </nav>
+
+    <div class="page-wrapper">
+      <header class="page-hero">
+        <p class="eyebrow">I (again, not a bot) am here for you!</p>
+        <h1>How Are You <em>Feeling?</em></h1>
+        <p class="subtitle">Pick whatever's true right now.</p>
+      </header>
+
+      <div class="section">
+        <div class="moods-grid">
+          <button class="mood-btn" data-mood="sad" onclick="showMood('sad')">
+            <span class="mood-emoji">🌧️</span>
+            <div class="mood-name">Sad</div>
+            <div class="mood-hint">Feeling down or low</div>
+          </button>
+          <button
+            class="mood-btn"
+            data-mood="anxious"
+            onclick="showMood('anxious')"
+          >
+            <span class="mood-emoji">🌀</span>
+            <div class="mood-name">Anxious</div>
+            <div class="mood-hint">Mind won't slow down</div>
+          </button>
+          <button
+            class="mood-btn"
+            data-mood="missing"
+            onclick="showMood('missing')"
+          >
+            <span class="mood-emoji">🌙</span>
+            <div class="mood-name">Missing You</div>
+            <div class="mood-hint">Wishing I was there</div>
+          </button>
+          <button
+            class="mood-btn"
+            data-mood="reassurance"
+            onclick="showMood('reassurance')"
+          >
+            <span class="mood-emoji">💗</span>
+            <div class="mood-name">Need Reassurance</div>
+            <div class="mood-hint">Just need to hear it</div>
+          </button>
+          <button class="mood-btn" data-mood="good" onclick="showMood('good')">
+            <span class="mood-emoji">🌸</span>
+            <div class="mood-name">Having a Good Day</div>
+            <div class="mood-hint">Sharing it with you</div>
+          </button>
+          <button
+            class="mood-btn"
+            data-mood="lonely"
+            onclick="showMood('lonely')"
+          >
+            <span class="mood-emoji">🕯️</span>
+            <div class="mood-name">Feeling Lonely</div>
+            <div class="mood-hint">Could use your presence</div>
+          </button>
+        </div>
+
+        <!-- Message panels -->
+        <div id="panel-sad" class="message-panel">
+          <div class="message-card">
+            <div class="message-mood-header">
+              <span class="message-mood-emoji">🌧️</span>
+              <div class="message-mood-label">Hey, I see you.</div>
+            </div>
+            <p class="message-body">
+              Hey Srinita, I'm so sorry you're having a sad day, that really
+              sucks. But it's ok, you will absolutely get through this and you
+              don't really have to explain it or fix it right away. I wish I
+              could be there to sit with you and listen and help you get past
+              this. But since I can't do that right now, I want you to do
+              something kind for yourself. Even something small. Eat some
+              chocolate or ice cream. Take a nice shower. Go for a run. Watch
+              something that makes you feel cozy. As tough as it might seem,
+              this feeling will pass. You've made it through every difficult
+              thing life has thrown at you so far. This one's no different.
+            </p>
+            <p class="message-sign">— Saaketh, wishing I was right there 🌙</p>
+            <div class="extra-messages">
+              <div class="extra-msg">
+                "It's ok if the only thing you do today is keep going."
+              </div>
+              <div class="extra-msg">
+                "You're just as amazing on your sad days as you are on happy
+                ones. Maybe more, honestly."
+              </div>
+              <div class="extra-msg">"This is temporary."</div>
+            </div>
+          </div>
+        </div>
+
+        <div id="panel-anxious" class="message-panel">
+          <div class="message-card">
+            <div class="message-mood-header">
+              <span class="message-mood-emoji">🌀</span>
+              <div class="message-mood-label">Let's slow it down.</div>
+            </div>
+            <p class="message-body">
+              Okay, breathe with me for a second. In through your nose — hold it
+              — out slowly. Do that two more times. Seriously. Now do 20 jumping
+              jacks. Ok how do you feel? Somewhat goofy at least I hope :) I
+              know what anxiety feels like for you. That spiral where one
+              thought leads to ten others and suddenly everything feels like a
+              problem that needs solving right now. I know. But right now, most
+              of the things your brain is catastrophizing are not as real as
+              they feel. Anxiety is fake. It makes things feel permanent and
+              urgent that are neither. You are safe. You are loved. You are
+              handling things better than you think you are. And you don't have
+              to figure everything out today.
+            </p>
+            <p class="message-sign">— Saaketh, proud of you ♥</p>
+            <div class="extra-messages">
+              <div class="extra-msg">
+                "Name 5 things you can see and 3 things you can hear right now.
+                Ground yourself. You're here, you're okay."
+              </div>
+              <div class="extra-msg">
+                "You've survived every anxious day so far. Your track record is
+                100%."
+              </div>
+              <div class="extra-msg">
+                "Worry does not empty tomorrow of its sorrow, it empties today
+                of its strength." (Thought it was a banger)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="panel-missing" class="message-panel">
+          <div class="message-card">
+            <div class="message-mood-header">
+              <span class="message-mood-emoji">🌙</span>
+              <div class="message-mood-label">I miss you too. So much.</div>
+            </div>
+            <p class="message-body">
+              I want you to know that wherever I am right now, I am thinking
+              about you and I love you sooo much. That's not something I say to
+              be sweet, it's just true. You've woven yourself into how I
+              experience the world, and being away from you doesn't change that.
+              I miss a lot of the little things. I miss the way you feel on my
+              chest. I miss making ice cream with you. I miss being in the same
+              space as you. It's a unique kind of ache and I feel it too. But
+              honestly it only hurts this much because what we have is real and
+              that's kinda beautiful in its own twisted way no? But go check the
+              countdown. I don't think there's that much longer till we're back
+              together!
+            </p>
+            <p class="message-sign">— Saaketh, counting every second ✦</p>
+            <div class="extra-messages">
+              <div class="extra-msg">
+                "The distance is temporary. Us is not."
+              </div>
+              <div class="extra-msg">
+                "Missing me means you love me. And I love you back, endlessly."
+              </div>
+              <div class="extra-msg">
+                "I can't wait to just sit and talk with you from dusk till dawn
+                about everything that we've done!"
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="panel-reassurance" class="message-panel">
+          <div class="message-card">
+            <div class="message-mood-header">
+              <span class="message-mood-emoji">💗</span>
+              <div class="message-mood-label">Let me be very clear.</div>
+            </div>
+            <p class="message-body">
+              I love you. I love you more than I ever thought I would and every
+              day, I choose you, fully, without reservation, and with all my
+              heart. Nothing about being away changes how I feel. I left knowing
+              exactly how I feel about you and that hasn't wavered for a single
+              moment. If your brain is feeding you any doubts right now, I need
+              you to hear me say: that doubt isn't based on anything real. I am
+              crazy about you. I am so excited to see you again. I am yours. You
+              never have to wonder.
+            </p>
+            <p class="message-sign">
+              — Saaketh, who loves you more than words 💌
+            </p>
+            <div class="extra-messages">
+              <div class="extra-msg">
+                "You are so so loved. By me, specifically, on purpose."
+              </div>
+              <div class="extra-msg">
+                "I chose you before I left and I'll choose you the moment I'm
+                back."
+              </div>
+              <div class="extra-msg">
+                "Whatever the doubt is about, it's wrong. I promise you, it's
+                wrong."
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="panel-good" class="message-panel">
+          <div class="message-card">
+            <div class="message-mood-header">
+              <span class="message-mood-emoji">🌸</span>
+              <div class="message-mood-label">Tell me everything!</div>
+            </div>
+            <p class="message-body">
+              A good day!! I love a good day. I want to hear about it. Write it
+              all down in the journal so I can read every detail when I'm back.
+              I hope you know how much it means to me that you're taking care of
+              yourself, having great times, living your life. You deserve entire
+              stretches of wonderful days, and I love thinking about you out
+              there in the world being happy and making the people around you
+              happy. And just so you know: knowing you had a good day today
+              genuinely makes my day, wherever I am. Your joy is my joy.
+            </p>
+            <p class="message-sign">— Saaketh, genuinely so happy for you ✨</p>
+            <div class="extra-messages">
+              <div class="extra-msg">
+                "Save the memory. Tell me about it when I'm back. I want every
+                detail."
+              </div>
+              <div class="extra-msg">
+                "Good days deserve to be celebrated. Be proud of yourself."
+              </div>
+              <div class="extra-msg">
+                "This is what I want for you. All of it."
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="panel-lonely" class="message-panel">
+          <div class="message-card">
+            <div class="message-mood-header">
+              <span class="message-mood-emoji">🕯️</span>
+              <div class="message-mood-label">
+                You're not alone. You're really not.
+              </div>
+            </div>
+            <p class="message-body">
+              Loneliness is one of the harder feelings. It can be there in a
+              full room or on a quiet evening. I know, I probably have felt it
+              too recently. I love your presence in my life so much but now that
+              you're not there for me to text random things to or drive over at
+              ungodly hours to see, I feel kinda lonely too. BUT I want you to
+              remember: you have people. Please don't let the loneliness keep
+              you isolated. Call Hamsini, hang out with Oracle peeps, you could
+              even ask Natalia if she wants to do something. People love you and
+              would want to hear from you. And I'm here too. Not in person, not
+              right now. But this whole website is me showing up for you in the
+              only way I could manage. Because I absolutely want you to know
+              that no matter what, I am there for you. I think about you every
+              day (probably multiple times a day honestly) and I am so, so glad
+              you exist and that you're mine.
+            </p>
+            <p class="message-sign">— Saaketh, always in your corner 🕯️</p>
+            <div class="extra-messages">
+              <div class="extra-msg">
+                "Text or call someone. Let them be there for you."
+              </div>
+              <div class="extra-msg">"I'm thinking of you."</div>
+              <div class="extra-msg">
+                "If you're feeling super lonely, go listen to the songs and
+                scroll through our photos but remember, you've got people all
+                around you and more importantly, yourself."
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="shared.js"></script>
+    <script>
+      function showMood(mood) {
+        // hide all panels
+        document
+          .querySelectorAll(".message-panel")
+          .forEach((p) => p.classList.remove("visible"));
+        document
+          .querySelectorAll(".mood-btn")
+          .forEach((b) => b.classList.remove("active"));
+
+        // show selected
+        const panel = document.getElementById("panel-" + mood);
+        const btn = document.querySelector('[data-mood="' + mood + '"]');
+        if (panel) {
+          panel.classList.add("visible");
+          panel.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        if (btn) btn.classList.add("active");
+      }
+    </script>
+  </body>
+</html>

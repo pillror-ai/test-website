@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Talk It Out ✦ For Srinita</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* ── JOURNAL ── */
+    .journal-layout {
+      display: grid;
+      grid-template-columns: 1fr 340px;
+      gap: 2.5rem;
+      align-items: start;
+    }
+
+    @media (max-width: 860px) {
+      .journal-layout { grid-template-columns: 1fr; }
+      .journal-sidebar { order: -1; }
+    }
+
+    /* Write panel */
+    .write-panel {
+      background: linear-gradient(145deg, rgba(26,16,64,0.7), rgba(17,13,46,0.8));
+      border: 1px solid rgba(196,168,232,0.18);
+      border-radius: 20px;
+      padding: 2.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .write-panel::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(to right, var(--purple), var(--rose), var(--blush));
+    }
+
+    .write-prompt {
+      font-family: 'Dancing Script', cursive;
+      font-size: 1.45rem;
+      color: var(--blush);
+      margin-bottom: 1.5rem;
+      opacity: 0.9;
+    }
+
+    .mood-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.6rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .mood-tag {
+      background: rgba(107,63,160,0.15);
+      border: 1px solid rgba(196,168,232,0.2);
+      border-radius: 50px;
+      padding: 0.35rem 1rem;
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.88rem;
+      color: var(--lavender);
+      cursor: pointer;
+      transition: all 0.25s;
+    }
+
+    .mood-tag:hover, .mood-tag.selected {
+      background: rgba(212,120,154,0.18);
+      border-color: rgba(212,120,154,0.5);
+      color: var(--blush);
+    }
+
+    .journal-textarea {
+      width: 100%;
+      min-height: 280px;
+      background: rgba(10,8,24,0.5);
+      border: 1px solid rgba(196,168,232,0.15);
+      border-radius: 12px;
+      padding: 1.5rem;
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #e0d8f5;
+      resize: vertical;
+      transition: border-color 0.3s;
+      outline: none;
+    }
+
+    .journal-textarea::placeholder { color: rgba(196,168,232,0.35); font-style: italic; }
+    .journal-textarea:focus { border-color: rgba(196,168,232,0.4); box-shadow: 0 0 0 3px rgba(107,63,160,0.1); }
+
+    .write-actions {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1.2rem;
+    }
+
+    .char-count {
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.85rem;
+      color: var(--lavender);
+      opacity: 0.5;
+    }
+
+    /* Sidebar / entries */
+    .journal-sidebar {}
+
+    .entries-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.3rem;
+      font-weight: 300;
+      color: var(--lavender);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .entry-count {
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.85rem;
+      color: var(--rose);
+      opacity: 0.75;
+      background: rgba(212,120,154,0.1);
+      border: 1px solid rgba(212,120,154,0.2);
+      border-radius: 50px;
+      padding: 0.2rem 0.7rem;
+    }
+
+    .entries-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      max-height: 600px;
+      overflow-y: auto;
+      padding-right: 0.3rem;
+    }
+
+    .entry-card {
+      background: linear-gradient(135deg, rgba(107,63,160,0.1), rgba(17,13,46,0.5));
+      border: 1px solid rgba(196,168,232,0.13);
+      border-radius: 14px;
+      padding: 1.3rem 1.4rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .entry-card:hover {
+      border-color: rgba(196,168,232,0.3);
+      background: linear-gradient(135deg, rgba(107,63,160,0.18), rgba(17,13,46,0.6));
+    }
+
+    .entry-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .entry-date {
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.8rem;
+      letter-spacing: 0.08em;
+      color: var(--rose);
+      opacity: 0.75;
+    }
+
+    .entry-mood-badge {
+      font-size: 0.85rem;
+      background: rgba(212,120,154,0.12);
+      border-radius: 50px;
+      padding: 0.15rem 0.6rem;
+      color: var(--blush);
+      font-family: 'Crimson Pro', serif;
+    }
+
+    .entry-preview {
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.95rem;
+      color: var(--lavender);
+      opacity: 0.8;
+      line-height: 1.5;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .entry-delete {
+      background: none;
+      border: none;
+      color: rgba(212,120,154,0.4);
+      cursor: pointer;
+      font-size: 0.85rem;
+      padding: 0.2rem 0.4rem;
+      border-radius: 6px;
+      transition: color 0.2s, background 0.2s;
+      margin-left: 0.5rem;
+    }
+
+    .entry-delete:hover { color: var(--rose); background: rgba(212,120,154,0.1); }
+
+    /* Modal / full entry view */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(10,8,24,0.85);
+      backdrop-filter: blur(8px);
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .modal-overlay.open { opacity: 1; pointer-events: all; }
+
+    .modal {
+      background: linear-gradient(145deg, rgba(26,16,64,0.98), rgba(17,13,46,0.98));
+      border: 1px solid rgba(196,168,232,0.25);
+      border-radius: 20px;
+      padding: 2.5rem;
+      max-width: 640px;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      transform: scale(0.95);
+      transition: transform 0.3s;
+      position: relative;
+    }
+
+    .modal-overlay.open .modal { transform: scale(1); }
+
+    .modal-close {
+      position: absolute;
+      top: 1.2rem; right: 1.5rem;
+      background: none;
+      border: none;
+      color: var(--lavender);
+      font-size: 1.4rem;
+      cursor: pointer;
+      opacity: 0.6;
+      transition: opacity 0.2s;
+    }
+
+    .modal-close:hover { opacity: 1; }
+
+    .modal-date {
+      font-family: 'Crimson Pro', serif;
+      font-size: 0.85rem;
+      letter-spacing: 0.12em;
+      color: var(--rose);
+      opacity: 0.7;
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-body {
+      font-family: 'Crimson Pro', serif;
+      font-size: 1.15rem;
+      line-height: 1.85;
+      color: #e0d8f5;
+      white-space: pre-wrap;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 2.5rem 1rem;
+      color: var(--lavender);
+      opacity: 0.5;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="starfield"></canvas>
+  <div class="floating-hearts"></div>
+
+  <nav>
+    <a href="index.html" class="nav-brand">✦ For Srinita</a>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="letters.html">Letters</a></li>
+      <li><a href="feelings.html">Feelings</a></li>
+      <li><a href="journal.html">Journal</a></li>
+      <li><a href="memories.html">Memories</a></li>
+      <li><a href="bucketlist.html">Us, Soon</a></li>
+    </ul>
+  </nav>
+
+  <div class="page-wrapper">
+    <header class="page-hero">
+      <p class="eyebrow">Tell me everything</p>
+      <h1><em>Talk It Out</em></h1>
+      <p class="subtitle">This is your space. Write to me like I'm right here listening.</p>
+    </header>
+
+    <div class="section">
+      <div class="journal-layout">
+        <!-- Write -->
+        <div class="write-panel">
+          <p class="write-prompt">Hey Srinita, what's on your mind? 🌙</p>
+          <div class="mood-tags">
+            <span class="mood-tag" onclick="toggleTag(this)">🌧️ Sad</span>
+            <span class="mood-tag" onclick="toggleTag(this)">🌀 Anxious</span>
+            <span class="mood-tag" onclick="toggleTag(this)">🌙 Missing you</span>
+            <span class="mood-tag" onclick="toggleTag(this)">🌸 Happy</span>
+            <span class="mood-tag" onclick="toggleTag(this)">💗 In love</span>
+            <span class="mood-tag" onclick="toggleTag(this)">🕯️ Lonely</span>
+            <span class="mood-tag" onclick="toggleTag(this)">✨ Reflective</span>
+          </div>
+          <textarea
+            class="journal-textarea"
+            id="journal-input"
+            placeholder="Just start writing. It doesn't have to make sense or be perfect. This is for you."
+            oninput="updateCharCount(this)"
+          ></textarea>
+          <div class="write-actions">
+            <span class="char-count" id="char-count">0 characters</span>
+            <button class="btn btn-primary" onclick="saveEntry()">
+              Save Entry ✦
+            </button>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="journal-sidebar">
+          <div class="entries-title">
+            Past Entries
+            <span class="entry-count" id="entry-count">0</span>
+          </div>
+          <div class="entries-list" id="entries-list">
+            <div class="empty-state">Your entries will appear here...</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Full entry modal -->
+  <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+    <div class="modal">
+      <button class="modal-close" onclick="closeModal()">&times;</button>
+      <div class="modal-date" id="modal-date"></div>
+      <div id="modal-mood" style="margin-bottom:1rem;font-family:'Crimson Pro',serif;color:var(--blush);font-size:0.95rem;"></div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="shared.js"></script>
+  <script>
+    let db;
+    let entries = [];
+    let selectedMood = '';
+
+    document.addEventListener('DOMContentLoaded', async () => {
+      db = initFirebase();
+      loadEntries();
+    });
+
+    function toggleTag(el) {
+      document.querySelectorAll('.mood-tag').forEach(t => t.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedMood = el.textContent.trim();
+    }
+
+    function updateCharCount(el) {
+      document.getElementById('char-count').textContent = el.value.length + ' characters';
+    }
+
+    async function saveEntry() {
+      const text = document.getElementById('journal-input').value.trim();
+      if (!text) { showToast('Write something first 💌'); return; }
+
+      const entry = {
+        text,
+        mood: selectedMood || '',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+        dateDisplay: new Date().toLocaleDateString('en-US', {
+          weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        })
+      };
+
+      try {
+        await db.collection('journal').add(entry);
+        document.getElementById('journal-input').value = '';
+        document.getElementById('char-count').textContent = '0 characters';
+        selectedMood = '';
+        document.querySelectorAll('.mood-tag').forEach(t => t.classList.remove('selected'));
+        showToast('Entry saved 🌙');
+        loadEntries();
+      } catch (e) {
+        showToast('Couldn\'t save — check Firebase config');
+        console.error(e);
+      }
+    }
+
+    async function loadEntries() {
+      try {
+        const snap = await db.collection('journal').orderBy('createdAt', 'desc').get();
+        entries = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+        renderEntries();
+      } catch (e) {
+        console.error('Load failed:', e);
+      }
+    }
+
+    function renderEntries() {
+      const list = document.getElementById('entries-list');
+      document.getElementById('entry-count').textContent = entries.length;
+
+      if (!entries.length) {
+        list.innerHTML = '<div class="empty-state">Your entries will appear here...</div>';
+        return;
+      }
+
+      list.innerHTML = entries.map((e, i) => `
+        <div class="entry-card" onclick="openEntry(${i})">
+          <div class="entry-meta">
+            <span class="entry-date">${e.dateDisplay || ''}</span>
+            ${e.mood ? `<span class="entry-mood-badge">${e.mood}</span>` : ''}
+            <button class="entry-delete" onclick="deleteEntry(event, '${e.id}')">✕</button>
+          </div>
+          <div class="entry-preview">${e.text}</div>
+        </div>
+      `).join('');
+    }
+
+    function openEntry(i) {
+      const e = entries[i];
+      document.getElementById('modal-date').textContent = e.dateDisplay || '';
+      document.getElementById('modal-mood').textContent = e.mood || '';
+      document.getElementById('modal-body').textContent = e.text;
+      document.getElementById('modal-overlay').classList.add('open');
+    }
+
+    function closeModal(event) {
+      if (!event || event.target === document.getElementById('modal-overlay') || event.currentTarget.tagName === 'BUTTON') {
+        document.getElementById('modal-overlay').classList.remove('open');
+      }
+    }
+
+    async function deleteEntry(event, id) {
+      event.stopPropagation();
+      if (!confirm('Delete this entry?')) return;
+      try {
+        await db.collection('journal').doc(id).delete();
+        showToast('Entry deleted');
+        loadEntries();
+      } catch (e) {
+        showToast('Could not delete — check Firebase');
+      }
+    }
+  </script>
+</body>
+</html>

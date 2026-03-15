@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>For Srinita, Always ✦</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* ── HERO ── */
+      .home-hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 2rem;
+        position: relative;
+      }
+
+      .home-hero .greeting {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.9rem;
+        letter-spacing: 0.3em;
+        text-transform: uppercase;
+        color: var(--rose);
+        margin-bottom: 1.5rem;
+        opacity: 0;
+        animation: fadeSlideUp 1s ease 0.3s forwards;
+      }
+
+      .home-hero h1 {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(3.5rem, 9vw, 7rem);
+        font-weight: 300;
+        line-height: 1.05;
+        color: var(--white);
+        margin-bottom: 1rem;
+        opacity: 0;
+        animation: fadeSlideUp 1s ease 0.6s forwards;
+      }
+
+      .home-hero h1 .script {
+        font-family: "Dancing Script", cursive;
+        font-size: 1.15em;
+        color: var(--blush);
+        display: block;
+      }
+
+      .home-hero .welcome-note {
+        max-width: 580px;
+        font-size: 1.2rem;
+        font-style: italic;
+        color: var(--lavender);
+        line-height: 1.8;
+        margin: 1.5rem auto 3.5rem;
+        opacity: 0;
+        animation: fadeSlideUp 1s ease 0.9s forwards;
+      }
+
+      /* ── COUNTDOWN ── */
+      .countdown-wrapper {
+        opacity: 0;
+        animation: fadeSlideUp 1s ease 1.2s forwards;
+      }
+
+      .countdown-label {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.82rem;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: var(--rose);
+        margin-bottom: 1.5rem;
+        opacity: 0.8;
+      }
+
+      .countdown {
+        display: flex;
+        gap: 1.5rem;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .countdown-unit {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .countdown-number {
+        font-family: "Cormorant Garamond", serif;
+        font-size: clamp(3.5rem, 8vw, 5.5rem);
+        font-weight: 300;
+        line-height: 1;
+        background: linear-gradient(180deg, var(--white) 0%, var(--blush) 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        min-width: 100px;
+        text-align: center;
+        position: relative;
+      }
+
+      .countdown-number::after {
+        content: "";
+        position: absolute;
+        bottom: -8px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60%;
+        height: 1px;
+        background: linear-gradient(
+          to right,
+          transparent,
+          rgba(196, 168, 232, 0.4),
+          transparent
+        );
+      }
+
+      .countdown-unit span {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.78rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--lavender);
+        margin-top: 1rem;
+        opacity: 0.7;
+      }
+
+      .countdown-sep {
+        font-size: 3.5rem;
+        color: var(--rose);
+        opacity: 0.4;
+        align-self: flex-start;
+        padding-top: 0.4rem;
+        line-height: 1;
+      }
+
+      /* ── GLOW RING ── */
+      .glow-ring {
+        position: absolute;
+        width: 500px;
+        height: 500px;
+        border-radius: 50%;
+        background: radial-gradient(
+          circle,
+          rgba(107, 63, 160, 0.18) 0%,
+          transparent 70%
+        );
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        animation: pulse 6s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%,
+        100% {
+          transform: translate(-50%, -50%) scale(1);
+          opacity: 1;
+        }
+        50% {
+          transform: translate(-50%, -50%) scale(1.15);
+          opacity: 0.6;
+        }
+      }
+
+      /* ── NAV CARDS ── */
+      .nav-cards {
+        padding: 3rem 2rem 6rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+
+      .nav-cards-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.6rem;
+        font-weight: 300;
+        color: var(--lavender);
+        text-align: center;
+        margin-bottom: 3rem;
+        letter-spacing: 0.05em;
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .nav-card {
+        background: linear-gradient(
+          135deg,
+          rgba(107, 63, 160, 0.1),
+          rgba(212, 120, 154, 0.06)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.18);
+        border-radius: 18px;
+        padding: 2.2rem 2rem;
+        text-align: center;
+        text-decoration: none;
+        color: var(--white);
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .nav-card::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at top,
+          rgba(196, 168, 232, 0.07),
+          transparent 65%
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .nav-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(196, 168, 232, 0.4);
+        box-shadow:
+          0 16px 50px rgba(107, 63, 160, 0.25),
+          0 0 80px rgba(212, 120, 154, 0.08);
+      }
+
+      .nav-card:hover::before {
+        opacity: 1;
+      }
+
+      .nav-card-icon {
+        font-size: 2.4rem;
+        margin-bottom: 1rem;
+        display: block;
+      }
+
+      .nav-card-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.45rem;
+        font-weight: 300;
+        margin-bottom: 0.6rem;
+        color: var(--blush);
+      }
+
+      .nav-card-desc {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.95rem;
+        color: var(--lavender);
+        opacity: 0.8;
+        line-height: 1.5;
+      }
+
+      /* ── ANIMATIONS ── */
+      @keyframes fadeSlideUp {
+        from {
+          opacity: 0;
+          transform: translateY(24px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 480px) {
+        .countdown {
+          gap: 0.8rem;
+        }
+        .countdown-number {
+          font-size: 2.8rem;
+          min-width: 70px;
+        }
+        .countdown-sep {
+          font-size: 2.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="starfield"></canvas>
+    <div class="floating-hearts"></div>
+
+    <nav>
+      <a href="index.html" class="nav-brand">✦ For Srinita</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="letters.html">Letters</a></li>
+        <li><a href="feelings.html">Feelings</a></li>
+        <li><a href="journal.html">Journal</a></li>
+        <li><a href="memories.html">Memories</a></li>
+        <li><a href="bucketlist.html">Us, Soon</a></li>
+      </ul>
+    </nav>
+
+    <div class="page-wrapper">
+      <section class="home-hero">
+        <div class="glow-ring"></div>
+        <p class="greeting">A little piece of me, always with you</p>
+        <h1>
+          For
+          <span class="script">Srinita</span>
+        </h1>
+        <p class="welcome-note">
+          Hey pilla. I made this so that even when we're far away and can't talk
+          to each other, you always have somewhere to come that feels like me. I
+          love you more than I can say and I'm so excited to see you be a more
+          confident, independent version of yourself at the end of this!
+        </p>
+
+        <div class="countdown-wrapper">
+          <p class="countdown-label">Until I'm back in your arms</p>
+          <div class="countdown">
+            <div class="countdown-unit">
+              <div class="countdown-number" id="cd-days">--</div>
+              <span>days</span>
+            </div>
+            <div class="countdown-sep">·</div>
+            <div class="countdown-unit">
+              <div class="countdown-number" id="cd-hours">--</div>
+              <span>hours</span>
+            </div>
+            <div class="countdown-sep">·</div>
+            <div class="countdown-unit">
+              <div class="countdown-number" id="cd-minutes">--</div>
+              <span>minutes</span>
+            </div>
+            <div class="countdown-sep">·</div>
+            <div class="countdown-unit">
+              <div class="countdown-number" id="cd-seconds">--</div>
+              <span>seconds</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="nav-cards">
+        <p class="nav-cards-title">What I've got for you</p>
+        <div class="cards-grid">
+          <a href="letters.html" class="nav-card">
+            <span class="nav-card-icon">💌</span>
+            <div class="nav-card-title">Love Letters</div>
+            <div class="nav-card-desc">
+              Words I wrote. And reasons I love you.
+            </div>
+          </a>
+          <a href="feelings.html" class="nav-card">
+            <span class="nav-card-icon">🫂</span>
+            <div class="nav-card-title">How Are You Feeling?</div>
+            <div class="nav-card-desc">
+              Tell me what's going on. I have something to say for every mood (I
+              am not a bot.)
+            </div>
+          </a>
+          <a href="journal.html" class="nav-card">
+            <span class="nav-card-icon">📓</span>
+            <div class="nav-card-title">Talk It Out</div>
+            <div class="nav-card-desc">
+              Write to me whenever you need. I'm always here to listen.
+            </div>
+          </a>
+          <a href="memories.html" class="nav-card">
+            <span class="nav-card-icon">🖼️</span>
+            <div class="nav-card-title">Our Memories</div>
+            <div class="nav-card-desc">Our highlight reel.</div>
+          </a>
+          <a href="bucketlist.html" class="nav-card">
+            <span class="nav-card-icon">✨</span>
+            <div class="nav-card-title">Us, Soon</div>
+            <div class="nav-card-desc">
+              Everything we're going to do the moment we're back together!
+            </div>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <script src="shared.js"></script>
+    <script>
+      // Countdown to June 8, 2026
+      const RETURN_DATE = new Date("2026-04-20T00:00:00");
+
+      function updateCountdown() {
+        const now = new Date();
+        const diff = RETURN_DATE - now;
+        if (diff <= 0) {
+          document.getElementById("cd-days").textContent = "0";
+          document.getElementById("cd-hours").textContent = "0";
+          document.getElementById("cd-minutes").textContent = "0";
+          document.getElementById("cd-seconds").textContent = "0";
+          return;
+        }
+        const days = Math.floor(diff / 86400000);
+        const hours = Math.floor((diff % 86400000) / 3600000);
+        const minutes = Math.floor((diff % 3600000) / 60000);
+        const seconds = Math.floor((diff % 60000) / 1000);
+
+        document.getElementById("cd-days").textContent = String(days).padStart(
+          2,
+          "0",
+        );
+        document.getElementById("cd-hours").textContent = String(
+          hours,
+        ).padStart(2, "0");
+        document.getElementById("cd-minutes").textContent = String(
+          minutes,
+        ).padStart(2, "0");
+        document.getElementById("cd-seconds").textContent = String(
+          seconds,
+        ).padStart(2, "0");
+      }
+
+      updateCountdown();
+      setInterval(updateCountdown, 1000);
+    </script>
+  </body>
+</html>

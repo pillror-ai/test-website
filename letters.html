@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Love Letters ✦ For Srinita</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* ── LETTERS ── */
+      .letter-card {
+        background: linear-gradient(
+          145deg,
+          rgba(26, 16, 64, 0.7),
+          rgba(17, 13, 46, 0.8)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.18);
+        border-radius: 18px;
+        padding: 3rem;
+        margin-bottom: 2.5rem;
+        position: relative;
+        overflow: hidden;
+        transition:
+          border-color 0.4s,
+          box-shadow 0.4s;
+      }
+
+      .letter-card::before {
+        content: "";
+        position: absolute;
+        top: -40px;
+        right: -40px;
+        width: 160px;
+        height: 160px;
+        background: radial-gradient(
+          circle,
+          rgba(212, 120, 154, 0.1),
+          transparent 65%
+        );
+        pointer-events: none;
+      }
+
+      .letter-card:hover {
+        border-color: rgba(196, 168, 232, 0.35);
+        box-shadow: 0 12px 50px rgba(107, 63, 160, 0.2);
+      }
+
+      .letter-num {
+        font-family: "Dancing Script", cursive;
+        font-size: 1rem;
+        color: var(--rose);
+        letter-spacing: 0.1em;
+        margin-bottom: 1.2rem;
+        opacity: 0.75;
+      }
+
+      .letter-body {
+        font-family: "Crimson Pro", serif;
+        font-size: 1.2rem;
+        line-height: 1.85;
+        width: 100%;
+        color: #e8e0f5;
+        white-space: pre-line;
+        text-align: center;
+      }
+
+      .letter-sign {
+        font-family: "Dancing Script", cursive;
+        font-size: 1.4rem;
+        color: var(--blush);
+        margin-top: 2rem;
+        text-align: right;
+      }
+
+      /* ── REASONS GRID ── */
+      .reasons-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+        gap: 1.2rem;
+      }
+
+      .reason-card {
+        background: linear-gradient(
+          135deg,
+          rgba(107, 63, 160, 0.1),
+          rgba(212, 120, 154, 0.06)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.15);
+        border-radius: 14px;
+        padding: 1.5rem 1.6rem;
+        transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        cursor: default;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .reason-card::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(232, 180, 200, 0.06),
+          transparent 70%
+        );
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .reason-card:hover {
+        transform: translateY(-4px) scale(1.02);
+        border-color: rgba(196, 168, 232, 0.4);
+        box-shadow:
+          0 10px 40px rgba(107, 63, 160, 0.2),
+          0 0 0 1px rgba(232, 180, 200, 0.1);
+      }
+
+      .reason-card:hover::after {
+        opacity: 1;
+      }
+
+      .reason-num {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 0.78rem;
+        letter-spacing: 0.15em;
+        color: var(--rose);
+        opacity: 0.6;
+        margin-bottom: 0.5rem;
+      }
+
+      .reason-text {
+        font-family: "Crimson Pro", serif;
+        font-size: 1.05rem;
+        color: #ddd4f0;
+        line-height: 1.5;
+      }
+
+      .reason-emoji {
+        font-size: 1.4rem;
+        margin-bottom: 0.6rem;
+        display: block;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="starfield"></canvas>
+    <div class="floating-hearts"></div>
+
+    <nav>
+      <a href="index.html" class="nav-brand">✦ For Srinita</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="letters.html">Letters</a></li>
+        <li><a href="feelings.html">Feelings</a></li>
+        <li><a href="journal.html">Journal</a></li>
+        <li><a href="memories.html">Memories</a></li>
+        <li><a href="bucketlist.html">Us, Soon</a></li>
+      </ul>
+    </nav>
+
+    <div class="page-wrapper">
+      <header class="page-hero">
+        <p class="eyebrow">Letters of love</p>
+        <h1>Love <em>Letters</em></h1>
+        <p class="subtitle">
+          Words I wanted you to have when you needed them most.
+        </p>
+      </header>
+  </body>
+</html>
