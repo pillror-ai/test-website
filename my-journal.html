@@ -1,0 +1,945 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Saaketh's Side ✦</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* ── PASSWORD GATE ── */
+      .gate {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+      }
+
+      .gate-card {
+        background: linear-gradient(
+          145deg,
+          rgba(26, 16, 64, 0.85),
+          rgba(17, 13, 46, 0.9)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.2);
+        border-radius: 24px;
+        padding: 3.5rem;
+        max-width: 440px;
+        width: 100%;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .gate-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          to right,
+          var(--purple),
+          var(--rose),
+          var(--blush)
+        );
+      }
+
+      .gate-icon {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        display: block;
+      }
+
+      .gate-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 2.2rem;
+        font-weight: 300;
+        color: var(--white);
+        margin-bottom: 0.5rem;
+      }
+
+      .gate-title em {
+        font-style: italic;
+        color: var(--blush);
+      }
+
+      .gate-subtitle {
+        font-family: "Crimson Pro", serif;
+        font-size: 1.05rem;
+        color: var(--lavender);
+        opacity: 0.75;
+        margin-bottom: 2.5rem;
+        line-height: 1.6;
+      }
+
+      .gate-input-wrap {
+        position: relative;
+        margin-bottom: 1.2rem;
+      }
+
+      .gate-input {
+        width: 100%;
+        background: rgba(10, 8, 24, 0.6);
+        border: 1px solid rgba(196, 168, 232, 0.2);
+        border-radius: 12px;
+        padding: 1rem 3rem 1rem 1.4rem;
+        font-family: "Crimson Pro", serif;
+        font-size: 1.1rem;
+        color: var(--white);
+        outline: none;
+        text-align: center;
+        letter-spacing: 0.15em;
+        transition:
+          border-color 0.3s,
+          box-shadow 0.3s;
+      }
+
+      .gate-input::placeholder {
+        color: rgba(196, 168, 232, 0.3);
+        letter-spacing: 0.05em;
+        font-style: italic;
+      }
+
+      .gate-input:focus {
+        border-color: rgba(196, 168, 232, 0.45);
+        box-shadow: 0 0 0 3px rgba(107, 63, 160, 0.12);
+      }
+
+      .gate-input.error {
+        border-color: rgba(212, 120, 154, 0.6);
+        box-shadow: 0 0 0 3px rgba(212, 120, 154, 0.1);
+        animation: shake 0.4s ease;
+      }
+
+      @keyframes shake {
+        0%,
+        100% {
+          transform: translateX(0);
+        }
+        20% {
+          transform: translateX(-8px);
+        }
+        40% {
+          transform: translateX(8px);
+        }
+        60% {
+          transform: translateX(-5px);
+        }
+        80% {
+          transform: translateX(5px);
+        }
+      }
+
+      .toggle-pw {
+        position: absolute;
+        right: 1rem;
+        top: 50%;
+        transform: translateY(-50%);
+        background: none;
+        border: none;
+        color: var(--lavender);
+        cursor: pointer;
+        opacity: 0.5;
+        font-size: 1rem;
+        transition: opacity 0.2s;
+      }
+
+      .toggle-pw:hover {
+        opacity: 1;
+      }
+
+      .gate-error {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.9rem;
+        color: var(--rose);
+        margin-bottom: 1rem;
+        min-height: 1.3em;
+        font-style: italic;
+      }
+
+      .gate-btn {
+        width: 100%;
+        justify-content: center;
+        font-size: 1.05rem;
+      }
+
+      /* ── MAIN JOURNAL (hidden until unlocked) ── */
+      .journal-main {
+        display: none;
+      }
+      .journal-main.unlocked {
+        display: block;
+      }
+
+      /* ── HEADER BADGE ── */
+      .saaketh-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(
+          135deg,
+          rgba(107, 63, 160, 0.2),
+          rgba(212, 120, 154, 0.15)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.25);
+        border-radius: 50px;
+        padding: 0.4rem 1.2rem;
+        font-family: "Crimson Pro", serif;
+        font-size: 0.85rem;
+        letter-spacing: 0.1em;
+        color: var(--lavender);
+        margin-bottom: 1rem;
+      }
+
+      /* ── JOURNAL LAYOUT ── */
+      .journal-layout {
+        display: grid;
+        grid-template-columns: 1fr 340px;
+        gap: 2.5rem;
+        align-items: start;
+      }
+
+      @media (max-width: 860px) {
+        .journal-layout {
+          grid-template-columns: 1fr;
+        }
+        .journal-sidebar {
+          order: -1;
+        }
+      }
+
+      /* Write panel */
+      .write-panel {
+        background: linear-gradient(
+          145deg,
+          rgba(26, 16, 64, 0.7),
+          rgba(17, 13, 46, 0.8)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.18);
+        border-radius: 20px;
+        padding: 2.5rem;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .write-panel::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        background: linear-gradient(
+          to right,
+          var(--purple),
+          var(--rose),
+          var(--blush)
+        );
+      }
+
+      .write-prompt {
+        font-family: "Dancing Script", cursive;
+        font-size: 1.45rem;
+        color: var(--blush);
+        margin-bottom: 1.5rem;
+        opacity: 0.9;
+      }
+
+      .mood-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.6rem;
+        margin-bottom: 1.5rem;
+      }
+
+      .mood-tag {
+        background: rgba(107, 63, 160, 0.15);
+        border: 1px solid rgba(196, 168, 232, 0.2);
+        border-radius: 50px;
+        padding: 0.35rem 1rem;
+        font-family: "Crimson Pro", serif;
+        font-size: 0.88rem;
+        color: var(--lavender);
+        cursor: pointer;
+        transition: all 0.25s;
+      }
+
+      .mood-tag:hover,
+      .mood-tag.selected {
+        background: rgba(212, 120, 154, 0.18);
+        border-color: rgba(212, 120, 154, 0.5);
+        color: var(--blush);
+      }
+
+      .journal-textarea {
+        width: 100%;
+        min-height: 300px;
+        background: rgba(10, 8, 24, 0.5);
+        border: 1px solid rgba(196, 168, 232, 0.15);
+        border-radius: 12px;
+        padding: 1.5rem;
+        font-family: "Crimson Pro", serif;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #e0d8f5;
+        resize: vertical;
+        outline: none;
+        transition: border-color 0.3s;
+      }
+
+      .journal-textarea::placeholder {
+        color: rgba(196, 168, 232, 0.35);
+        font-style: italic;
+      }
+
+      .journal-textarea:focus {
+        border-color: rgba(196, 168, 232, 0.4);
+        box-shadow: 0 0 0 3px rgba(107, 63, 160, 0.1);
+      }
+
+      .write-actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 1.2rem;
+      }
+
+      .char-count {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.85rem;
+        color: var(--lavender);
+        opacity: 0.5;
+      }
+
+      /* ── SIDEBAR ── */
+      .entries-title {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.3rem;
+        font-weight: 300;
+        color: var(--lavender);
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .entry-count {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.85rem;
+        color: var(--rose);
+        opacity: 0.75;
+        background: rgba(212, 120, 154, 0.1);
+        border: 1px solid rgba(212, 120, 154, 0.2);
+        border-radius: 50px;
+        padding: 0.2rem 0.7rem;
+      }
+
+      .entries-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+        max-height: 620px;
+        overflow-y: auto;
+        padding-right: 0.3rem;
+      }
+
+      .entry-card {
+        background: linear-gradient(
+          135deg,
+          rgba(107, 63, 160, 0.1),
+          rgba(17, 13, 46, 0.5)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.13);
+        border-radius: 14px;
+        padding: 1.3rem 1.4rem;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+
+      .entry-card:hover {
+        border-color: rgba(196, 168, 232, 0.3);
+        background: linear-gradient(
+          135deg,
+          rgba(107, 63, 160, 0.18),
+          rgba(17, 13, 46, 0.6)
+        );
+      }
+
+      .entry-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+      }
+
+      .entry-date {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.8rem;
+        letter-spacing: 0.08em;
+        color: var(--rose);
+        opacity: 0.75;
+      }
+
+      .entry-mood-badge {
+        font-size: 0.85rem;
+        background: rgba(212, 120, 154, 0.12);
+        border-radius: 50px;
+        padding: 0.15rem 0.6rem;
+        color: var(--blush);
+        font-family: "Crimson Pro", serif;
+      }
+
+      .entry-preview {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.95rem;
+        color: var(--lavender);
+        opacity: 0.8;
+        line-height: 1.5;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+      }
+
+      .entry-delete {
+        background: none;
+        border: none;
+        color: rgba(212, 120, 154, 0.4);
+        cursor: pointer;
+        font-size: 0.85rem;
+        padding: 0.2rem 0.4rem;
+        border-radius: 6px;
+        transition:
+          color 0.2s,
+          background 0.2s;
+        margin-left: 0.5rem;
+        opacity: 0;
+        transition:
+          opacity 0.2s,
+          color 0.2s;
+      }
+
+      .entry-card:hover .entry-delete {
+        opacity: 1;
+      }
+      .entry-delete:hover {
+        color: var(--rose);
+        background: rgba(212, 120, 154, 0.1);
+      }
+
+      /* ── LOCK BUTTON in nav area ── */
+      .lock-btn {
+        position: fixed;
+        bottom: 2rem;
+        left: 2rem;
+        background: rgba(107, 63, 160, 0.2);
+        border: 1px solid rgba(196, 168, 232, 0.2);
+        border-radius: 50px;
+        padding: 0.6rem 1.2rem;
+        font-family: "Crimson Pro", serif;
+        font-size: 0.85rem;
+        color: var(--lavender);
+        cursor: pointer;
+        transition: all 0.3s;
+        z-index: 50;
+        display: none;
+      }
+
+      .lock-btn.visible {
+        display: flex;
+        align-items: center;
+        gap: 0.4rem;
+      }
+      .lock-btn:hover {
+        background: rgba(212, 120, 154, 0.15);
+        border-color: var(--rose);
+        color: var(--rose);
+      }
+
+      /* ── MODAL ── */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(10, 8, 24, 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2rem;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s;
+      }
+
+      .modal-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .modal {
+        background: linear-gradient(
+          145deg,
+          rgba(26, 16, 64, 0.98),
+          rgba(17, 13, 46, 0.98)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.25);
+        border-radius: 20px;
+        padding: 2.5rem;
+        max-width: 640px;
+        width: 100%;
+        max-height: 80vh;
+        overflow-y: auto;
+        transform: scale(0.95);
+        transition: transform 0.3s;
+        position: relative;
+      }
+
+      .modal-overlay.open .modal {
+        transform: scale(1);
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 1.2rem;
+        right: 1.5rem;
+        background: none;
+        border: none;
+        color: var(--lavender);
+        font-size: 1.4rem;
+        cursor: pointer;
+        opacity: 0.6;
+        transition: opacity 0.2s;
+      }
+
+      .modal-close:hover {
+        opacity: 1;
+      }
+
+      .modal-date {
+        font-family: "Crimson Pro", serif;
+        font-size: 0.85rem;
+        letter-spacing: 0.12em;
+        color: var(--rose);
+        opacity: 0.7;
+        margin-bottom: 0.5rem;
+      }
+
+      .modal-body {
+        font-family: "Crimson Pro", serif;
+        font-size: 1.15rem;
+        line-height: 1.85;
+        color: #e0d8f5;
+        white-space: pre-wrap;
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 2.5rem 1rem;
+        color: var(--lavender);
+        opacity: 0.5;
+        font-family: "Cormorant Garamond", serif;
+        font-size: 1.1rem;
+        font-style: italic;
+      }
+
+      /* ── TRIP COUNTER ── */
+      .trip-counter {
+        background: linear-gradient(
+          135deg,
+          rgba(107, 63, 160, 0.1),
+          rgba(212, 120, 154, 0.06)
+        );
+        border: 1px solid rgba(196, 168, 232, 0.15);
+        border-radius: 14px;
+        padding: 1.4rem 1.8rem;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
+
+      .trip-day-num {
+        font-family: "Cormorant Garamond", serif;
+        font-size: 3rem;
+        font-weight: 300;
+        line-height: 1;
+        background: linear-gradient(180deg, var(--white), var(--blush));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        flex-shrink: 0;
+      }
+
+      .trip-day-label {
+        font-family: "Crimson Pro", serif;
+      }
+
+      .trip-day-label strong {
+        display: block;
+        font-size: 1rem;
+        color: var(--blush);
+        font-weight: 400;
+        margin-bottom: 0.2rem;
+      }
+
+      .trip-day-label span {
+        font-size: 0.85rem;
+        color: var(--lavender);
+        opacity: 0.65;
+        font-style: italic;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="starfield"></canvas>
+    <div class="floating-hearts"></div>
+
+    <nav>
+      <a href="index.html" class="nav-brand">✦ For Srinita</a>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="letters.html">Letters</a></li>
+        <li><a href="feelings.html">Feelings</a></li>
+        <li><a href="journal.html">Journal</a></li>
+        <li><a href="memories.html">Memories</a></li>
+        <li><a href="bucketlist.html">Us, Soon</a></li>
+        <li><a href="my-journal.html">Saaketh's Side</a></li>
+      </ul>
+    </nav>
+
+    <!-- ── PASSWORD GATE ── -->
+    <div class="page-wrapper" id="gate-wrapper">
+      <div class="gate">
+        <div class="gate-card">
+          <span class="gate-icon">🔒</span>
+          <h1 class="gate-title">Saaketh's <em>Side</em></h1>
+          <p class="gate-subtitle">
+            Thoughts from my side. Private, but I might share if you want.
+          </p>
+          <div class="gate-input-wrap">
+            <input
+              class="gate-input"
+              id="pw-input"
+              type="password"
+              placeholder="enter the password"
+              onkeydown="if (event.key === 'Enter') unlock();"
+            />
+            <button class="toggle-pw" onclick="togglePw()" title="Show/hide">
+              👁
+            </button>
+          </div>
+          <div class="gate-error" id="gate-error"></div>
+          <button class="btn btn-primary gate-btn" onclick="unlock()">
+            Enter ✦
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── JOURNAL (shown after unlock) ── -->
+    <div class="journal-main" id="journal-main">
+      <header class="page-hero">
+        <p class="eyebrow">My side of the story</p>
+        <h1>Saaketh's <em>Journal</em></h1>
+        <p class="subtitle">
+          Thoughts, feelings, and dispatches from wherever I am.
+        </p>
+      </header>
+
+      <div class="section">
+        <!-- Trip day counter -->
+        <div class="trip-counter">
+          <div class="trip-day-num" id="trip-day">—</div>
+          <div class="trip-day-label">
+            <strong>Days into the break</strong>
+            <span id="trip-date-label">counting from March 15, 2026</span>
+          </div>
+        </div>
+
+        <div class="journal-layout">
+          <!-- Write -->
+          <div class="write-panel">
+            <p class="write-prompt">What's on your mind, Saaketh? 🌙</p>
+            <div class="mood-tags">
+              <span class="mood-tag" onclick="toggleTag(this)"
+                >🌍 Exploring</span
+              >
+              <span class="mood-tag" onclick="toggleTag(this)"
+                >🌙 Missing her</span
+              >
+              <span class="mood-tag" onclick="toggleTag(this)"
+                >✨ Grateful</span
+              >
+              <span class="mood-tag" onclick="toggleTag(this)"
+                >🌀 Unsettled</span
+              >
+              <span class="mood-tag" onclick="toggleTag(this)"
+                >😌 At peace</span
+              >
+              <span class="mood-tag" onclick="toggleTag(this)"
+                >💭 Reflective</span
+              >
+              <span class="mood-tag" onclick="toggleTag(this)">🔥 Excited</span>
+              <span class="mood-tag" onclick="toggleTag(this)"
+                >😴 Exhausted</span
+              >
+            </div>
+            <textarea
+              class="journal-textarea"
+              id="journal-input"
+              oninput="updateCharCount(this)"
+            ></textarea>
+            <div class="write-actions">
+              <span class="char-count" id="char-count">0 characters</span>
+              <button class="btn btn-primary" onclick="saveEntry()">
+                Save Entry ✦
+              </button>
+            </div>
+          </div>
+
+          <!-- Sidebar -->
+          <div class="journal-sidebar">
+            <div class="entries-title">
+              My Entries
+              <span class="entry-count" id="entry-count">0</span>
+            </div>
+            <div class="entries-list" id="entries-list">
+              <div class="empty-state">Your entries will appear here...</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lock button -->
+    <button class="lock-btn" id="lock-btn" onclick="lockJournal()">
+      🔒 Lock
+    </button>
+
+    <!-- Full entry modal -->
+    <div class="modal-overlay" id="modal-overlay" onclick="closeModal(event)">
+      <div class="modal">
+        <button class="modal-close" onclick="closeModal()">&times;</button>
+        <div class="modal-date" id="modal-date"></div>
+        <div
+          id="modal-mood"
+          style="
+            margin-bottom: 1rem;
+            font-family: &quot;Crimson Pro&quot;, serif;
+            color: var(--blush);
+            font-size: 0.95rem;
+          "
+        ></div>
+        <div class="modal-body" id="modal-body"></div>
+      </div>
+    </div>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="shared.js"></script>
+    <script>
+      // ─────────────────────────────────────────
+      //  SET YOUR PASSWORD HERE
+      // ─────────────────────────────────────────
+      const JOURNAL_PASSWORD = "Srinita";
+
+      // Trip start date — update to your actual departure date
+      const TRIP_START = new Date("2026-03-15T00:00:00");
+
+      let db;
+      let entries = [];
+      let selectedMood = "";
+
+      // ── TRIP DAY COUNTER ──
+      function updateTripDay() {
+        const now = new Date();
+        const diffMs = now - TRIP_START;
+        const day = Math.max(1, Math.floor(diffMs / 86400000) + 1);
+        document.getElementById("trip-day").textContent = day;
+        document.getElementById("trip-date-label").textContent =
+          "since " +
+          TRIP_START.toLocaleDateString("en-US", {
+            month: "long",
+            day: "numeric",
+            year: "numeric",
+          });
+      }
+
+      // ── PASSWORD GATE ──
+      function unlock() {
+        const input = document.getElementById("pw-input");
+        const error = document.getElementById("gate-error");
+
+        if (input.value === JOURNAL_PASSWORD) {
+          document.getElementById("gate-wrapper").style.display = "none";
+          document.getElementById("journal-main").classList.add("unlocked");
+          document.getElementById("lock-btn").classList.add("visible");
+          sessionStorage.setItem("saaketh_unlocked", "1");
+          db = initFirebase();
+          updateTripDay();
+          loadEntries();
+        } else {
+          error.textContent = "That's not quite right ✦";
+          input.classList.add("error");
+          setTimeout(() => input.classList.remove("error"), 500);
+          input.value = "";
+        }
+      }
+
+      function lockJournal() {
+        sessionStorage.removeItem("saaketh_unlocked");
+        document.getElementById("gate-wrapper").style.display = "";
+        document.getElementById("journal-main").classList.remove("unlocked");
+        document.getElementById("lock-btn").classList.remove("visible");
+        document.getElementById("pw-input").value = "";
+        document.getElementById("gate-error").textContent = "";
+      }
+
+      function togglePw() {
+        const input = document.getElementById("pw-input");
+        input.type = input.type === "password" ? "text" : "password";
+      }
+
+      // ── JOURNAL ──
+      function toggleTag(el) {
+        document
+          .querySelectorAll(".mood-tag")
+          .forEach((t) => t.classList.remove("selected"));
+        el.classList.add("selected");
+        selectedMood = el.textContent.trim();
+      }
+
+      function updateCharCount(el) {
+        document.getElementById("char-count").textContent =
+          el.value.length + " characters";
+      }
+
+      async function saveEntry() {
+        const text = document.getElementById("journal-input").value.trim();
+        if (!text) {
+          showToast("Write something first 🌙");
+          return;
+        }
+
+        const entry = {
+          text,
+          mood: selectedMood || "",
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          dateDisplay: new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+          tripDay: Math.max(
+            1,
+            Math.floor((new Date() - TRIP_START) / 86400000) + 1,
+          ),
+        };
+
+        try {
+          await db.collection("saaketh-journal").add(entry);
+          document.getElementById("journal-input").value = "";
+          document.getElementById("char-count").textContent = "0 characters";
+          selectedMood = "";
+          document
+            .querySelectorAll(".mood-tag")
+            .forEach((t) => t.classList.remove("selected"));
+          showToast("Saved ✦");
+          loadEntries();
+        } catch (e) {
+          showToast("Couldn't save — check Firebase config");
+          console.error(e);
+        }
+      }
+
+      async function loadEntries() {
+        try {
+          const snap = await db
+            .collection("saaketh-journal")
+            .orderBy("createdAt", "desc")
+            .get();
+          entries = snap.docs.map((d) => ({ id: d.id, ...d.data() }));
+          renderEntries();
+        } catch (e) {
+          console.error("Load failed:", e);
+        }
+      }
+
+      function renderEntries() {
+        const list = document.getElementById("entries-list");
+        document.getElementById("entry-count").textContent = entries.length;
+
+        if (!entries.length) {
+          list.innerHTML =
+            '<div class="empty-state">Your first entry awaits...</div>';
+          return;
+        }
+
+        list.innerHTML = entries
+          .map(
+            (e, i) => `
+        <div class="entry-card" onclick="openEntry(${i})">
+          <div class="entry-meta">
+            <span class="entry-date">${e.tripDay ? "Day " + e.tripDay + " · " : ""}${e.dateDisplay || ""}</span>
+            ${e.mood ? `<span class="entry-mood-badge">${e.mood}</span>` : ""}
+            <button class="entry-delete" onclick="deleteEntry(event, '${e.id}')">✕</button>
+          </div>
+          <div class="entry-preview">${e.text}</div>
+        </div>
+      `,
+          )
+          .join("");
+      }
+
+      function openEntry(i) {
+        const e = entries[i];
+        document.getElementById("modal-date").textContent =
+          (e.tripDay ? "Day " + e.tripDay + " — " : "") + (e.dateDisplay || "");
+        document.getElementById("modal-mood").textContent = e.mood || "";
+        document.getElementById("modal-body").textContent = e.text;
+        document.getElementById("modal-overlay").classList.add("open");
+      }
+
+      function closeModal(event) {
+        if (
+          !event ||
+          event.target === document.getElementById("modal-overlay") ||
+          event.currentTarget.tagName === "BUTTON"
+        ) {
+          document.getElementById("modal-overlay").classList.remove("open");
+        }
+      }
+
+      async function deleteEntry(event, id) {
+        event.stopPropagation();
+        if (!confirm("Delete this entry?")) return;
+        try {
+          await db.collection("saaketh-journal").doc(id).delete();
+          showToast("Entry deleted");
+          loadEntries();
+        } catch (e) {
+          showToast("Could not delete");
+        }
+      }
+
+      // ── AUTO-UNLOCK if session still active ──
+      document.addEventListener("DOMContentLoaded", () => {
+        if (sessionStorage.getItem("saaketh_unlocked") === "1") {
+          document.getElementById("gate-wrapper").style.display = "none";
+          document.getElementById("journal-main").classList.add("unlocked");
+          document.getElementById("lock-btn").classList.add("visible");
+          db = initFirebase();
+          updateTripDay();
+          loadEntries();
+        }
+      });
+    </script>
+  </body>
+</html>
